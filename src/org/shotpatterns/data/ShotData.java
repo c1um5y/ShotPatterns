@@ -1,6 +1,9 @@
 package org.shotpatterns.data;
 
-public class ShotData {
+import java.text.DecimalFormat;
+
+public class ShotData implements Comparable<ShotData> {
+	public static final DecimalFormat FORMAT = new DecimalFormat("00.00");
 	public static final double OVER_THE_SHOULDER = 0; // ansnitt
 	public static final double EXTREME_CLOSE_UP = 1; // superkozeli
 	public static final double CLOSE_UP = 2; // premierplan
@@ -40,10 +43,20 @@ public class ShotData {
 
 	@Override
 	public String toString() {
-		return Double.toString(percentage);
+		return FORMAT.format(percentage);
 	}
 
 	public boolean isNear(ShotData data, int percent) {
 		return Math.abs(this.percentage - data.percentage) <= percent;
+	}
+
+	@Override
+	public int compareTo(ShotData o) {
+		if (this.percentage < o.percentage) {
+			return -1;
+		} else if (this.percentage > o.percentage) {
+			return 1;
+		}
+		return 0;
 	}
 }
