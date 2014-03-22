@@ -64,6 +64,9 @@ public class ShotPatternsFX extends Application {
 		SPButton search = new SPButton("Search", "Search for movies similar to the selected one");
 		search.setOnAction(new SearchSimilarMoviesButtonHandler());
 
+		SPButton delete = new SPButton("Delete", "Delete the selected line");
+		delete.setOnAction(new DeleteButtonHandler());
+
 		SPButton about = new SPButton("About");
 		about.setOnAction(new AboutButtonHandler());
 
@@ -78,6 +81,7 @@ public class ShotPatternsFX extends Application {
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().add(loadFiles);
 		buttonPane.getChildren().add(search);
+		buttonPane.getChildren().add(delete);
 		buttonPane.getChildren().add(about);
 		buttonPane.getChildren().add(selectablePercentages);
 		borderPane.setTop(buttonPane);
@@ -262,6 +266,16 @@ public class ShotPatternsFX extends Application {
 				stage.show();
 			}
 		}
+	}
+
+	private class DeleteButtonHandler implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 	private class AboutButtonHandler implements EventHandler<ActionEvent> {
