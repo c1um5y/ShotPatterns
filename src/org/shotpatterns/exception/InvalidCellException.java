@@ -9,7 +9,7 @@ public class InvalidCellException extends Exception {
 	private static final long serialVersionUID = -125596524475449313L;
 
 	public InvalidCellException(Cell cell) {
-		super("Invalid cell! " + extractCellType(cell.getCellType()));
+		super("Invalid cell! Type: " + extractCellType(cell.getCellType()));
 	}
 
 	public InvalidCellException(Cell cell, double value) {

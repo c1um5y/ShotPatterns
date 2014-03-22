@@ -3,7 +3,6 @@ package org.shotpatterns.ui;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +41,7 @@ import org.shotpatterns.exception.TitleAlreadyExistsException;
 
 public class ShotPatternsFX extends Application {
 
+	private static final Image ICON = new Image(ShotPatternsFX.class.getResourceAsStream("/resources/icon.png"));
 	private static final int BUTTON_HEIGHT = 30;
 	private static final String VERSION = "actor (0.1)";
 	private static final String MOVIE_DB_FILE = "movieDB.csv";
@@ -92,7 +92,7 @@ public class ShotPatternsFX extends Application {
 		stage.setWidth(1000);
 		stage.setHeight(500);
 		stage.setScene(scene);
-		stage.getIcons().add(new Image(ShotPatternsFX.class.getResourceAsStream("/resources/icon.png")));
+		stage.getIcons().add(ICON);
 		stage.show();
 	}
 
@@ -150,8 +150,8 @@ public class ShotPatternsFX extends Application {
 		ins.setCellValueFactory(new PropertyValueFactory<MovieData, ShotData>("ins"));
 	}
 
-	private ObservableList<MovieData> loadElements(FileDatabaseHandler dbHandler, TableView<MovieData> moviesTable)
-	        throws IOException, InsufficientDataException {
+	private ObservableList<MovieData> loadElements(TableView<MovieData> moviesTable) throws IOException,
+	        InsufficientDataException {
 		ObservableList<MovieData> databaseElements = FXCollections.observableList(new ArrayList<MovieData>(
 		        existingMovies.values()));
 		moviesTable.setItems(databaseElements);
@@ -190,18 +190,9 @@ public class ShotPatternsFX extends Application {
 						writer = dbHandler.createFileWriter(System.getProperty("user.home")
 						        + System.getProperty("file.separator") + MOVIE_DB_FILE);
 						dbHandler.createDatabaseFile(movieData, writer, existingKeys);
-					} catch (InvalidFormatException e) {
-						invalidFiles.append("Invalid excel format: " + file.getName() + "\n");
-					} catch (InvalidCellException e) {
-						invalidFiles.append("Invalid cell found in file: " + file.getName() + "\n");
-					} catch (InsufficientDataException e) {
-						// TODO can't happen
-					} catch (TitleAlreadyExistsException e) {
-						invalidFiles.append("File is already in the DB: " + file.getName() + "\n");
-					} catch (FileNotFoundException e) {
-						invalidFiles.append("File not found: " + file.getName() + "\n");
-					} catch (IOException ex) {
-						invalidFiles.append("IO error while parsing the excel file: " + file.getName() + "\n");
+					} catch (InvalidFormatException | InvalidCellException | IOException | InsufficientDataException
+					        | TitleAlreadyExistsException e) {
+						invalidFiles.append(e.getLocalizedMessage() + "\n");
 					} finally {
 						try {
 							if (writer != null) {
@@ -218,19 +209,16 @@ public class ShotPatternsFX extends Application {
 					reader = dbHandler.createFileReader(System.getProperty("user.home")
 					        + System.getProperty("file.separator") + MOVIE_DB_FILE);
 					existingMovies = dbHandler.parseDatabaseFile(reader);
-					loadElements(dbHandler, moviesTable);
-				} catch (InsufficientDataException e) {
-					e.printStackTrace();
-				} catch (IOException ex) {
-					try {
-						reader.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					loadElements(moviesTable);
+				} catch (InsufficientDataException | IOException | NumberFormatException e) {
+					DialogFX dialog = new DialogFX("Error", "Database file is corrupted!", ((Node) event.getSource())
+					        .getScene().getWindow(), 500, 200, DialogFX.Type.ERROR);
+					dialog.addOkButton();
+					dialog.show();
 				}
 				if (!invalidFiles.toString().equals("")) {
 					DialogFX dialog = new DialogFX("", invalidFiles.toString(), ((Node) event.getSource()).getScene()
-					        .getWindow(), 500, 200);
+					        .getWindow(), 500, 200, DialogFX.Type.WARNING);
 					dialog.addOkButton();
 					dialog.show();
 				}
@@ -246,7 +234,7 @@ public class ShotPatternsFX extends Application {
 			MovieData selectedItem = moviesTable.getSelectionModel().getSelectedItem();
 			if (selectedItem == null) {
 				DialogFX dialog = new DialogFX("Information", "No movie selected!", ((Node) event.getSource())
-				        .getScene().getWindow(), 200, 100);
+				        .getScene().getWindow(), 200, 100, DialogFX.Type.WARNING);
 				dialog.addOkButton();
 				dialog.show();
 
@@ -259,7 +247,7 @@ public class ShotPatternsFX extends Application {
 
 			if (foundItems.size() == 1) {
 				DialogFX dialog = new DialogFX("Information", "No similar movie found!", ((Node) event.getSource())
-				        .getScene().getWindow(), 200, 100);
+				        .getScene().getWindow(), 200, 100, DialogFX.Type.INFORMATION);
 				dialog.addOkButton();
 				dialog.show();
 			} else {
@@ -286,7 +274,7 @@ public class ShotPatternsFX extends Application {
 		@Override
 		public void handle(ActionEvent event) {
 			new DialogFX("About", "ShotPatterns\nVersion: " + VERSION + "\n\nAuthor: Kornel Jenei",
-			        ((Node) event.getSource()).getScene().getWindow(), 200, 100).show();
+			        ((Node) event.getSource()).getScene().getWindow(), 200, 100, DialogFX.Type.OKAY).show();
 		}
 
 	}
