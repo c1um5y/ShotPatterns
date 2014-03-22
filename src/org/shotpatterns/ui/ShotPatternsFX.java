@@ -42,7 +42,6 @@ import org.shotpatterns.exception.TitleAlreadyExistsException;
 public class ShotPatternsFX extends Application {
 
 	private static final Image ICON = new Image(ShotPatternsFX.class.getResourceAsStream("/resources/icon.png"));
-	private static final int BUTTON_HEIGHT = 30;
 	private static final String VERSION = "actor (0.1)";
 	private static final String MOVIE_DB_FILE = "movieDB.csv";
 	private static final int DEFAULT_PERCENTAGE = 5;
@@ -59,23 +58,19 @@ public class ShotPatternsFX extends Application {
 		excelChooser.getExtensionFilters().add(new ExtensionFilter("Excel files (*.xls, *.xlsx)", "*.xls", "*.xlsx"));
 		excelChooser.getExtensionFilters().add(new ExtensionFilter("All files (*.*)", "*.*"));
 
-		Button loadFiles = new Button("Load excel files");
-		loadFiles.setMinHeight(BUTTON_HEIGHT);
+		Button loadFiles = new SPButton("Load excel files");
 		loadFiles.setOnAction(new LoadExcelFilesButtonHandler());
 
-		Button search = new Button("Search");
-		search.setMinHeight(BUTTON_HEIGHT);
+		SPButton search = new SPButton("Search", "Search for movies similar to the selected one");
 		search.setOnAction(new SearchSimilarMoviesButtonHandler());
-		search.setTooltip(new Tooltip("Search for movies similar to the selected one"));
 
-		Button about = new Button("About");
-		about.setMinHeight(BUTTON_HEIGHT);
+		SPButton about = new SPButton("About");
 		about.setOnAction(new AboutButtonHandler());
 
 		ObservableList<Integer> percentageValues = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 		        12, 13, 14, 15);
 		selectablePercentages = new ComboBox<Integer>(percentageValues);
-		selectablePercentages.setMinHeight(BUTTON_HEIGHT);
+		selectablePercentages.setMinHeight(SPButton.BUTTON_HEIGHT);
 		selectablePercentages.setValue(DEFAULT_PERCENTAGE);
 		selectablePercentages.setTooltip(new Tooltip("Set the maximum difference in percentage"));
 		BorderPane borderPane = new BorderPane();
