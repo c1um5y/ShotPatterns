@@ -25,10 +25,9 @@ public class FileDatabaseHandler {
 	private static final int PERCENTAGE_START_POS = MOVIE_TITLE_POS + 1;
 	public static final String SEPARATOR = ";";
 
-	public BufferedWriter createFileWriter(String fileName) throws IOException {
+	public BufferedWriter createFileWriter(String fileName, StandardOpenOption option) throws IOException {
 		Path databaseFile = getDatabaseFile(fileName);
-		BufferedWriter databaseWriter = Files.newBufferedWriter(databaseFile, StandardCharsets.UTF_8,
-		        StandardOpenOption.APPEND);
+		BufferedWriter databaseWriter = Files.newBufferedWriter(databaseFile, StandardCharsets.UTF_8, option);
 
 		return databaseWriter;
 	}

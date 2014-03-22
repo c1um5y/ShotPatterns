@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -186,8 +187,9 @@ public class ShotPatternsFX extends Application {
 					try {
 						movieData = parser.parse(file, 0, 2, 0, 2, 4, existingMovies.keySet());
 						List<Integer> existingKeys = getExistingKeys(existingMovies);
-						writer = dbHandler.createFileWriter(System.getProperty("user.home")
-						        + System.getProperty("file.separator") + MOVIE_DB_FILE);
+						writer = dbHandler.createFileWriter(
+						        System.getProperty("user.home") + System.getProperty("file.separator") + MOVIE_DB_FILE,
+						        StandardOpenOption.APPEND);
 						dbHandler.createDatabaseFile(movieData, writer, existingKeys);
 					} catch (InvalidFormatException | InvalidCellException | IOException | InsufficientDataException
 					        | TitleAlreadyExistsException e) {
@@ -214,6 +216,14 @@ public class ShotPatternsFX extends Application {
 					        .getScene().getWindow(), 500, 200, DialogFX.Type.ERROR);
 					dialog.addOkButton();
 					dialog.show();
+				} finally {
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 				if (!invalidFiles.toString().equals("")) {
 					DialogFX dialog = new DialogFX("", invalidFiles.toString(), ((Node) event.getSource()).getScene()
@@ -273,9 +283,58 @@ public class ShotPatternsFX extends Application {
 		@Override
 		public void handle(ActionEvent event) {
 			// TODO Auto-generated method stub
+			// get index from table
+			// get the element from existingMovies
+			// remove
+			MovieData selectedItem = moviesTable.getSelectionModel().getSelectedItem();
+			if (selectedItem == null) {
+				DialogFX dialog = new DialogFX("Information", "No movie selected!", ((Node) event.getSource())
+				        .getScene().getWindow(), 200, 100, DialogFX.Type.WARNING);
+				dialog.addOkButton();
+				dialog.show();
 
+				return;
+			}
+
+			BufferedReader reader = null;
+			BufferedWriter writer = null;
+			try {
+				reader = dbHandler.createFileReader(System.getProperty("user.home")
+				        + System.getProperty("file.separator") + MOVIE_DB_FILE);
+				Map<Integer, MovieData> movies = dbHandler.parseDatabaseFile(reader);
+				reader.close();
+				Map<Integer, MovieData> remainingMovies = new HashMap<Integer, MovieData>();
+				for (int key : movies.keySet()) {
+					if (!movies.get(key).getTitle().equals(selectedItem.getTitle())) {
+						remainingMovies.put(key, movies.get(key));
+					}
+				}
+				existingMovies = remainingMovies;
+				loadElements(moviesTable);
+
+				writer = dbHandler.createFileWriter(
+				        System.getProperty("user.home") + System.getProperty("file.separator") + MOVIE_DB_FILE,
+				        StandardOpenOption.TRUNCATE_EXISTING);
+				dbHandler.createDatabaseFile(existingMovies, writer, new ArrayList<Integer>());
+
+			} catch (IOException | NumberFormatException | InsufficientDataException e) {
+				DialogFX dialog = new DialogFX("", e.getLocalizedMessage(), ((Node) event.getSource()).getScene()
+				        .getWindow(), 500, 200, DialogFX.Type.ERROR);
+				dialog.addOkButton();
+				dialog.show();
+			} finally {
+				try {
+					if (writer != null) {
+						writer.close();
+					}
+					if (reader != null) {
+						reader.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-
 	}
 
 	private class AboutButtonHandler implements EventHandler<ActionEvent> {
