@@ -61,7 +61,7 @@ public class ShotPatternsFX extends Application {
 
 		Button loadFiles = new Button("Load excel files");
 		loadFiles.setMinHeight(BUTTON_HEIGHT);
-		loadFiles.setOnAction(new LoadExcelFilesButtonHandler(stage));
+		loadFiles.setOnAction(new LoadExcelFilesButtonHandler());
 
 		Button search = new Button("Search");
 		search.setMinHeight(BUTTON_HEIGHT);
@@ -174,16 +174,10 @@ public class ShotPatternsFX extends Application {
 
 	private class LoadExcelFilesButtonHandler implements EventHandler<ActionEvent> {
 
-		private Stage stage;
-
-		public LoadExcelFilesButtonHandler(Stage stage) {
-			this.stage = stage;
-		}
-
 		@Override
 		public void handle(ActionEvent event) {
 			moviesTable.setDisable(true);
-			List<File> files = excelChooser.showOpenMultipleDialog(stage);
+			List<File> files = excelChooser.showOpenMultipleDialog(((Button) event.getSource()).getScene().getWindow());
 			if (files != null) {
 				StringBuilder invalidFiles = new StringBuilder();
 				for (File file : files) {
