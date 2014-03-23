@@ -1,0 +1,16 @@
+Boom (v0.2):
+	NEW:
+		Delete lines (one at a time) from the database
+	FIXES:
+		Sort the lines by column when sorting by shots
+
+Actor (v0.1):
+	NEW:
+		Load excel files to database
+			- The movie's title must be in the 3rd cell of the 1st column
+			- The shot data must start in the 3rd cell of the 5th column
+			and it must not contain empty cells because then the calculated
+			values will be misleading
+		Search for similar movies in the database to the selected one
+		Change the default percentage threshold when searching
+		About dialog
