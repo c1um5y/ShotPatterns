@@ -43,7 +43,7 @@ import org.shotpatterns.exception.TitleAlreadyExistsException;
 public class ShotPatternsFX extends Application {
 
 	private static final Image ICON = new Image(ShotPatternsFX.class.getResourceAsStream("/resources/icon.png"));
-	private static final String VERSION = "actor (0.1)";
+	private static final String VERSION = "- (0.1.1)";
 	private static final String MOVIE_DB_FILE = "movieDB.csv";
 	private static final int DEFAULT_PERCENTAGE = 5;
 	private TableView<MovieData> moviesTable = new TableView<MovieData>();
@@ -282,10 +282,6 @@ public class ShotPatternsFX extends Application {
 
 		@Override
 		public void handle(ActionEvent event) {
-			// TODO Auto-generated method stub
-			// get index from table
-			// get the element from existingMovies
-			// remove
 			MovieData selectedItem = moviesTable.getSelectionModel().getSelectedItem();
 			if (selectedItem == null) {
 				DialogFX dialog = new DialogFX("Information", "No movie selected!", ((Node) event.getSource())
