@@ -43,7 +43,7 @@ import org.shotpatterns.exception.TitleAlreadyExistsException;
 public class ShotPatternsFX extends Application {
 
 	private static final Image ICON = new Image(ShotPatternsFX.class.getResourceAsStream("/resources/icon.png"));
-	private static final String VERSION = "- (0.1.1)";
+	private static final String VERSION = "boom (0.2)";
 	private static final String MOVIE_DB_FILE = "movieDB.csv";
 	private static final int DEFAULT_PERCENTAGE = 5;
 	private TableView<MovieData> moviesTable = new TableView<MovieData>();
