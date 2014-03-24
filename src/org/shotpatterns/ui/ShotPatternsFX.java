@@ -251,8 +251,8 @@ public class ShotPatternsFX extends Application {
 			}
 			ObservableList<MovieData> items = moviesTable.getItems();
 			MovieDataFinder finder = new MovieDataFinder();
-			List<MovieData> foundItems = finder.search(selectedItem, items, selectablePercentages.getSelectionModel()
-			        .getSelectedItem());
+			Integer selectedPercentage = selectablePercentages.getSelectionModel().getSelectedItem();
+			List<MovieData> foundItems = finder.search(selectedItem, items, selectedPercentage);
 
 			if (foundItems.size() == 1) {
 				DialogFX dialog = new DialogFX("Information", "No similar movie found!", ((Node) event.getSource())
@@ -268,7 +268,7 @@ public class ShotPatternsFX extends Application {
 				borderPane.setCenter(moviesTable);
 				Scene scene = new Scene(borderPane);
 				Stage stage = new Stage();
-				stage.setTitle("Similar movies found");
+				stage.setTitle("Similar movies to " + selectedItem.getTitle() + " (" + selectedPercentage + "%)");
 				stage.setWidth(900);
 				stage.setHeight(200);
 				stage.setScene(scene);
